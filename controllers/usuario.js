@@ -40,3 +40,51 @@ exports.getRegistros = (req,res)=>{
         .catch(error=>console.log(error))  
     
 };
+
+exports.getRegistro = (req,res)=>{
+    //SELECT * FROM usuario WHERE
+    console.log(req.query)
+    //Usuario.findByPk(req.query.usuarioUsuario) //1.- Haciendo en select con la llave primaria
+    Usuario.findAll({
+        where:{
+            usuarioUsuario:req.query.usuarioUsuario
+        }
+    })
+        .then(result=>{
+            res.send(result);
+        })
+        .catch(error=>{
+            console.log(error)
+            res.send(error);
+        })
+
+};
+
+exports.postBorrarUsuario =(req,res)=>{
+    console.log(req.params);
+    Usuario.findByPk(req.params.usuarioUsuario)
+        .then(usuario=>{
+            return usuario && usuario.destroy(); //DELETE
+        })
+        .then(resultado=>{
+            console.log("Usuario eliminado correctamente")
+            console.log(resultado)
+            res.redirect('/usuario/confirmacion');
+        })
+        .catch(error=>console.log(error))
+}
+
+exports.postActualizarUsuario =(req,res)=>{
+    console.log(req.body);
+    Usuario.findByPk(req.body.usuarioUsuario)
+        .then(usuario=>{
+            usuario.passwordUsuario=req.body.passwordUsuario;
+            return usuario && usuario.save(); //UPDATE
+        })
+        .then(resultado=>{
+            console.log("Usuario actualizado correctamente")
+            console.log(resultado)
+            res.redirect('/usuario/confirmacion');
+        })
+        .catch(error=>console.log(error))
+}
